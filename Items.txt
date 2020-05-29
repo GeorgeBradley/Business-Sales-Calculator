@@ -1,0 +1,5 @@
+Apple,1.4,32,
+Bannana,0.43,45,
+Peach,0.5,39,
+Coconut,0.32,65,
+Lemon,0.47,78,
