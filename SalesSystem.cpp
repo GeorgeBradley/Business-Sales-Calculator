@@ -247,7 +247,7 @@ int main()
 			std::cout << "===========================================\n";
 			std::cout << "\t\tSales System | Main Menu\n";
 			std::cout << "===========================================\n";
-
+			std::cout << "Test";
 			Display_Menu();
 			std::string sMenuChoice = "";//Choice will be stored in string for coversion once validated as an INT
 			int iMenuChoice = 0;
