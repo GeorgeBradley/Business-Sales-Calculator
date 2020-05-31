@@ -15,7 +15,7 @@ void Display_Invalid_Command_Message();
 //Used for ensuring what user has inputted isn't a disproportinate amount
 bool Boundary_Check_Value_Is_Valid(int iValue, int iMin, int iMax); //overloaded function to handle ints
 bool Boundary_Check_Value_Is_Valid(double dValue, double dMin, double dMax); //overloaded function to handle doubles
-void Confirm_Continue(std::string sMessage);
+void Confirm_Continue(std::string sMessage = "\nPress any key to continue...");
 void Message_And_Input(std::string prompt, std::string* value);
 void Message_And_Input(std::string prompt, std::size_t stIndex, std::string* value);//Used to display the '£' to demonstrate it's currency
 void Message_And_Input(std::string prompt, int* value);

@@ -2,6 +2,7 @@
 #include "Accounts.h" //Included for the purposes of a Login System
 #include "Functions.h" //This is used to access functions (I created) that are used through all cpp files
 #include "Items_Collection.h" //This is used for the main sales system
+#include "Files.h"
 #include <cctype>
 #include <fstream> //This allows for input / output to an external textfile
 #include <iomanip>
@@ -228,6 +229,7 @@ int main()
 	bool bLogout = false;
 	Accounts objUsers; //Declaring instance of Accounts struct (defined and implemented in seperate files, "Accounts.h" and "Accounts.cpp")
 	Items objItems; //Declaring instance of Items struct (defined and implemented in seperate files, Items_Collection.h and Items_Collection.cpp)
+	
 	//Declaring file pathways.
 	std::string inputFilePathUsers = "Users.txt"; //File path name for storing user credentials
 	std::string inputFilePathItems = "Items.txt"; // file path name for storing items
@@ -243,6 +245,7 @@ int main()
 
 		do
 		{
+			
 			bLogout = false;
 			std::cout << "===========================================\n";
 			std::cout << "\t\tSales System | Main Menu\n";
@@ -416,7 +419,7 @@ int main()
 			}
 			else
 			{
-				Confirm_Continue("\nPress any key to continue...");
+				Confirm_Continue();
 				std::cout << "\n";
 			}
 			std::cout << "\n";

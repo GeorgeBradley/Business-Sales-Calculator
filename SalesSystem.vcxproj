@@ -148,12 +148,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Accounts.cpp" />
+    <ClCompile Include="Files.cpp" />
     <ClCompile Include="Functions.cpp" />
     <ClCompile Include="Items_Collection.cpp" />
     <ClCompile Include="SalesSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Accounts.h" />
+    <ClInclude Include="Files.h" />
     <ClInclude Include="Functions.h" />
     <ClInclude Include="Items_Collection.h" />
     <ClInclude Include="Item_Singular.h" />
