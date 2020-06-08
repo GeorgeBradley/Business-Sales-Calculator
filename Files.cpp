@@ -1,5 +1,28 @@
 #include "Files.h"
 
+std::size_t Select_File_From_Menu(std::string &inputFilePath, std::vector<std::string>&objFile)
+{
+	std::string sChoice = "";
+	int iChoice = 0;
+	Message_And_Input("Choose a number that represents the text file you wish to use...\n",&sChoice);
+	if (Is_Input_A_Number(sChoice, &iChoice) == true)
+	{
+		return std::size_t(iChoice) - 1;
+	}
+}
+bool Is_Index_Valid(std::vector<std::string>& objFile, std::size_t stIndex)
+{
+	try
+	{
+		objFile.at(stIndex);
+		return true;
+	}
+	catch(...)
+	{
+		std::cout << "Invalid!\n";
+		return false;
+	}
+}
 void File_Menu_System(std::vector<std::string>& objFile, std::string& inputFilePath)
 {
 	std::string sChoice = "";
@@ -9,16 +32,20 @@ void File_Menu_System(std::vector<std::string>& objFile, std::string& inputFileP
 	do 
 	{
 		Display_File_Menu();
-		Message_And_Input("Enter a number from the menu: ", &sChoice);
+		Message_And_Input("\nEnter a number from the menu: ", &sChoice);
+		std::cout << "\n";
 		if (Is_Input_A_Number(sChoice, &iChoice) == true)
 		{
 			switch (iChoice)
 			{
 			case 1:
+			
+				Add_New_File(inputFilePath, objFile);
 
 				break;
 			case 2:
 				Display_Existing_Files(objFile, inputFilePath);
+				Is_Index_Valid(objFile, Select_File_From_Menu(inputFilePath, objFile));
 				break;
 			default:
 				std::cout << "You've entered an invalid command, please try again!\n";
@@ -43,9 +70,10 @@ void Display_File_Menu()
 void Display_Existing_Files(std::vector<std::string>& objFiles, std::string& inputFilePath)
 {
 	Add_Text_File_To_Vector(objFiles, inputFilePath);
+	
 	for (std::size_t stCount = 0; stCount < objFiles.size(); stCount++)
 	{
-		std::cout << stCount + 1 << ". " << objFiles.at(stCount);
+		std::cout << stCount + 1 << ". " << objFiles.at(stCount) << "\n\n";
 	}
 }
 
@@ -72,7 +100,7 @@ void Add_Text_File_To_Vector(std::vector<std::string>&objFiles, std::string& inp
 		}
 	}
 }
-bool Add_New_File(std::string &inputFilePath, std::vector<std::string>objFiles)
+bool Add_New_File(std::string &inputFilePath, std::vector<std::string>&objFiles)
 {
 	
 	std::string sNameOfNewTextFile;
@@ -86,6 +114,7 @@ bool Add_New_File(std::string &inputFilePath, std::vector<std::string>objFiles)
 		}
 	}
 	std::cout << "Successfully added!\n";
+	objFiles.push_back(sNameOfNewTextFile);
 	Append_Credential_To_Text_File(inputFilePath, sNameOfNewTextFile);
 	return true;
 
@@ -94,6 +123,6 @@ void Append_Credential_To_Text_File(std::string& inputFilePath, std::string& sNe
 {
 	std::ofstream file;
 	file.open(inputFilePath, std::ios_base::app);
-	file << sNewTextFile << ",\n";
+	file << sNewTextFile << ".txt,\n";
 	file.close();
 }
