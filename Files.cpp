@@ -1,5 +1,5 @@
 #include "Files.h"
-#include "Functions.h"
+
 void File_Menu_System(std::vector<std::string>& objFile, std::string& inputFilePath)
 {
 	std::string sChoice = "";
@@ -20,6 +20,8 @@ void File_Menu_System(std::vector<std::string>& objFile, std::string& inputFileP
 			case 2:
 				Display_Existing_Files(objFile, inputFilePath);
 				break;
+			default:
+				std::cout << "You've entered an invalid command, please try again!\n";
 			}
 		}
 		else
@@ -34,7 +36,7 @@ void File_Menu_System(std::vector<std::string>& objFile, std::string& inputFileP
 void Display_File_Menu() 
 {
 	std::cout << "What would you like to do?\nChoose a number from the file menu...\n";
-	std::cout << "1. Create a new items text file\n";
+	std::cout << "1. Create a text file to store items in\n";
 	std::cout << "2. Choose from an existing file\n";
 }
 
@@ -70,4 +72,28 @@ void Add_Text_File_To_Vector(std::vector<std::string>&objFiles, std::string& inp
 		}
 	}
 }
+bool Add_New_File(std::string &inputFilePath, std::vector<std::string>objFiles)
+{
+	
+	std::string sNameOfNewTextFile;
+	Message_And_Input("Enter name of new text file: ", &sNameOfNewTextFile);
+	for (std::string objFile : objFiles)
+	{
+		if (objFile == sNameOfNewTextFile)
+		{
+			std::cout << "That file name already exists!\n";
+			return false;
+		}
+	}
+	std::cout << "Successfully added!\n";
+	Append_Credential_To_Text_File(inputFilePath, sNameOfNewTextFile);
+	return true;
 
+}
+void Append_Credential_To_Text_File(std::string& inputFilePath, std::string& sNewTextFile)
+{
+	std::ofstream file;
+	file.open(inputFilePath, std::ios_base::app);
+	file << sNewTextFile << ",\n";
+	file.close();
+}

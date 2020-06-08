@@ -229,11 +229,11 @@ int main()
 	bool bLogout = false;
 	Accounts objUsers; //Declaring instance of Accounts struct (defined and implemented in seperate files, "Accounts.h" and "Accounts.cpp")
 	Items objItems; //Declaring instance of Items struct (defined and implemented in seperate files, Items_Collection.h and Items_Collection.cpp)
-	
+	std::vector<std::string>objFile;
 	//Declaring file pathways.
 	std::string inputFilePathUsers = "Users.txt"; //File path name for storing user credentials
 	std::string inputFilePathItems = "Items.txt"; // file path name for storing items
-
+	std::string inputFilePathFiles = "Files.txt";
 	const double dTaxRate = 0.2; //This is where the tax rate can be modified to reflect calculations made by program
 	const double dOperationalCostPercentage = 0.5; //This is where operational cost percentage can be modified to reflect calculations made by program
 	const double dUnderperformingPercentage = 0.05;//This is the percentage that makes the comparison as to whether an item is underperforming
@@ -242,7 +242,7 @@ int main()
 	do
 	{
 		Login(objUsers, inputFilePathUsers);
-
+		File_Menu_System(objFile, inputFilePathFiles);
 		do
 		{
 			
