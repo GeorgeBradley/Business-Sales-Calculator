@@ -117,7 +117,8 @@ bool Items::Delete_An_Item(std::string inputFilePath)
 				do
 				{
 					Message_And_Input("Are you sure you want to delete this item? (y/n): ", &cChoice);
-				} while (Is_Input_Valid());
+				} 
+				while (Is_Input_Valid());
 
 				cChoice = std::toupper(cChoice);
 				if (cChoice == 'Y')
@@ -137,7 +138,8 @@ bool Items::Delete_An_Item(std::string inputFilePath)
 					Perform_Invalid_Operation();
 					bContinue = false;
 				}
-			} while (bContinue == false);
+			} 
+			while (bContinue == false);
 		}
 	}
 	else
@@ -182,98 +184,75 @@ bool Items::Add_Item(std::string sFilePathway)
 	std::string sInputName;
 	double dInputSalePrice = 0;
 	int iInputQuantity = 0;
-
 	std::string sInputSalePrice = "";
 	std::string sInputQuantity = "";
 
-	std::string sHowManyItems = "";
-	int iHowManyItems = 0;
-	do
-	{
-		//This is where they are asked how many items they want to add
-		do
-		{
-			std::cout << "\nIf you've changed your mind about adding an item please enter 0.\n";
-			Message_And_Input("How many items do you wish to add?: ", &sHowManyItems);
-		} while (Is_Input_A_Number(sHowManyItems, &iHowManyItems) == false);
-
-		//Only allowed 5 items at a time.
-		if (iHowManyItems > 5)
-		{
-			std::cout << "Sorry, you can only enter 5 items at a time.\n";
-		}
-		//If it's less than or equal 0 it will interpret that has you not wishing to add any item.
-		if (iHowManyItems <= 0)
-		{
-			std::cout << "You have chosen not to add any items.\n";
-			return false;
-		}
-	} while (iHowManyItems > 5); // Loop until 5 or less has been entered 
-
 	//This is where the iHowManyItems is used to loop through the number to push_back() items to objItems vector
 
-	for (int iCount = 0; iCount < iHowManyItems; iCount++)
+	
+	do
+	{
+		std::cout << "\n";
+		std::cout << "**Enter information for new item**\n";
+		std::cout << "\n";
+		//This is where user enters the item name
+		do
+		{
+			Message_And_Input("\tName: ", &sInputName);
+		}
+		//Error checking
+		while (Is_String_Character_Allowed(sInputName) == false && Is_String_Length_Valid(sInputName, 1, 15) == false); //can enter a maximum of 15 characters
+
+	} while (Check_If_Item_Exists(sInputName) == true); //ask them again if they're trying to input a name that already exists
+
+	//This is where user enters sale price for item.
+	do
 	{
 		do
 		{
-			std::cout << "\n";
-			std::cout << "**Enter information for new item**\n";
-			std::cout << "\n";
-			//This is where user enters the item name
-			do
-			{
-				Message_And_Input("\tName: ", &sInputName);
-			}
-			//Error checking
-			while (Is_String_Character_Allowed(sInputName) == false && Is_String_Length_Valid(sInputName, 1, 15) == false); //can enter a maximum of 15 characters
+			Message_And_Input("\tSale price: ", 156, &sInputSalePrice);
+		} while (Is_Input_A_Number(sInputSalePrice, &dInputSalePrice) == false);
 
-		} while (Check_If_Item_Exists(sInputName) == true); //ask them again if they're trying to input a name that already exists
+	} while (Boundary_Check_Value_Is_Valid(dInputSalePrice, 0.0, 10000000.0) == false);
 
-		//This is where user enters sale price for item.
+	do
+	{
+		//This is where the quantity sold for an item is entered
 		do
 		{
-			do
-			{
-				Message_And_Input("\tSale price: ", 156, &sInputSalePrice);
-			} while (Is_Input_A_Number(sInputSalePrice, &dInputSalePrice) == false);
+			Message_And_Input("\tQuantity sold: ", &sInputQuantity);
+		} 
+		while (Is_Input_A_Number(sInputQuantity, &iInputQuantity) == false);
+	} 
+	while (Boundary_Check_Value_Is_Valid(iInputQuantity, 0, 100000) == false);
 
-		} while (Boundary_Check_Value_Is_Valid(dInputSalePrice, 0.0, 10000000.0) == false);
-
-		do
+	unsigned char cChoice = 0;
+	bool bContinue = false;
+	std::cout << "\n";
+	//This is where the user is now able to confirm whether they wish to add the item they've just entered the informationf for
+	do
+	{
+		Message_And_Input("Do you wish to add this item? (y/n): ", &cChoice);
+		cChoice = toupper(cChoice);
+		if (cChoice == 'Y')
 		{
-			//This is where the quantity sold for an item is entered
-			do
-			{
-				Message_And_Input("\tQuantity sold: ", &sInputQuantity);
-			} while (Is_Input_A_Number(sInputQuantity, &iInputQuantity) == false);
-		} while (Boundary_Check_Value_Is_Valid(iInputQuantity, 0, 100000) == false);
-		unsigned char cChoice = 0;
-		bool bContinue = false;
-		std::cout << "\n";
-		//This is where the user is now able to confirm whether they wish to add the item they've just entered the informationf for
-		do
+			std::cout << "Item has been succesfully added!\n";
+			objItems.push_back(Item{ sInputName, dInputSalePrice, iInputQuantity });//using push_back to add item using constuctor parameters
+			Append_Item_To_Text_File(sFilePathway, sInputName, dInputSalePrice, iInputQuantity);
+			bContinue = true;
+		}
+		else if (cChoice == 'N')
 		{
-			Message_And_Input("Do you wish to add this item? (y/n): ", &cChoice);
-			cChoice = toupper(cChoice);
-			if (cChoice == 'Y')
-			{
-				std::cout << "Item has been succesfully added!\n";
-				objItems.push_back(Item{ sInputName, dInputSalePrice, iInputQuantity });//using push_back to add item using constuctor parameters
-				Append_Item_To_Text_File(sFilePathway, sInputName, dInputSalePrice, iInputQuantity);
-				bContinue = true;
-			}
-			else if (cChoice == 'N')
-			{
-				std::cout << "You have chosen to disregard this item.\n";
-				bContinue = true;
-			}
-			else
-			{
-				Perform_Invalid_Operation();
-				bContinue = false;
-			}
-		} while (Is_Input_Valid() || bContinue == false);
-	}
+			std::cout << "You have chosen to disregard this item.\n";
+			bContinue = true;
+		}
+		else
+		{
+			Perform_Invalid_Operation();
+			bContinue = false;
+		}
+	} while (Is_Input_Valid() || bContinue == false);
+	
 	return true;
 }
 //This procedure is first used to ask the user how many items they wish to add. If they enter a number less than 5 they will be re-prompted to enter a higher number. I've included user validation to ensure user-errors can't be made to promote usability. After the user has entered the number of items that they would like they will then be subsequently prompted to enter the information pertaining to each of the items. This calls the "Add_New_Item() procedure".

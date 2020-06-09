@@ -9,6 +9,10 @@ std::size_t Select_File_From_Menu(std::string &inputFilePath, std::vector<std::s
 	{
 		return std::size_t(iChoice) - 1;
 	}
+	else
+	{
+		std::cout << "Invalid\n";
+	}
 }
 bool Is_Index_Valid(std::vector<std::string>& objFile, std::size_t stIndex)
 {
@@ -23,12 +27,12 @@ bool Is_Index_Valid(std::vector<std::string>& objFile, std::size_t stIndex)
 		return false;
 	}
 }
-void File_Menu_System(std::vector<std::string>& objFile, std::string& inputFilePath)
+void File_Menu_System(std::vector<std::string>& objFile, std::string& inputFilePath, std::string &ItemTextFile)
 {
 	std::string sChoice = "";
 	bool bExit = false;
 	int iChoice = 0;
-
+	std::size_t stIndex = 0;
 	do 
 	{
 		Display_File_Menu();
@@ -45,7 +49,12 @@ void File_Menu_System(std::vector<std::string>& objFile, std::string& inputFileP
 				break;
 			case 2:
 				Display_Existing_Files(objFile, inputFilePath);
-				Is_Index_Valid(objFile, Select_File_From_Menu(inputFilePath, objFile));
+				stIndex = Select_File_From_Menu(inputFilePath, objFile);
+				if (Is_Index_Valid(objFile, stIndex) == true) 
+				{
+					ItemTextFile = objFile.at(stIndex);
+					bExit = true;
+				}
 				break;
 			default:
 				std::cout << "You've entered an invalid command, please try again!\n";
@@ -69,6 +78,7 @@ void Display_File_Menu()
 
 void Display_Existing_Files(std::vector<std::string>& objFiles, std::string& inputFilePath)
 {
+	objFiles.resize(0);
 	Add_Text_File_To_Vector(objFiles, inputFilePath);
 	
 	for (std::size_t stCount = 0; stCount < objFiles.size(); stCount++)
@@ -102,19 +112,20 @@ void Add_Text_File_To_Vector(std::vector<std::string>&objFiles, std::string& inp
 }
 bool Add_New_File(std::string &inputFilePath, std::vector<std::string>&objFiles)
 {
-	
+	objFiles.resize(0);
+	Add_Text_File_To_Vector(objFiles, inputFilePath);
 	std::string sNameOfNewTextFile;
 	Message_And_Input("Enter name of new text file: ", &sNameOfNewTextFile);
 	for (std::string objFile : objFiles)
 	{
-		if (objFile == sNameOfNewTextFile)
+		if (objFile == sNameOfNewTextFile + ".txt")
 		{
-			std::cout << "That file name already exists!\n";
+			std::cout << "That file name already exists!\n\n";
 			return false;
 		}
 	}
 	std::cout << "Successfully added!\n";
-	objFiles.push_back(sNameOfNewTextFile);
+	objFiles.push_back(sNameOfNewTextFile + ".txt");
 	Append_Credential_To_Text_File(inputFilePath, sNameOfNewTextFile);
 	return true;
 

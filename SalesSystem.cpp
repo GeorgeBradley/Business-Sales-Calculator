@@ -229,7 +229,7 @@ int main()
 	bool bLogout = false;
 	Accounts objUsers; //Declaring instance of Accounts struct (defined and implemented in seperate files, "Accounts.h" and "Accounts.cpp")
 	Items objItems; //Declaring instance of Items struct (defined and implemented in seperate files, Items_Collection.h and Items_Collection.cpp)
-	std::vector<std::string>objFile;
+	std::vector<std::string>objFiles;
 	//Declaring file pathways.
 	std::string inputFilePathUsers = "Users.txt"; //File path name for storing user credentials
 	std::string inputFilePathItems = "Items.txt"; // file path name for storing items
@@ -238,14 +238,15 @@ int main()
 	const double dOperationalCostPercentage = 0.5; //This is where operational cost percentage can be modified to reflect calculations made by program
 	const double dUnderperformingPercentage = 0.05;//This is the percentage that makes the comparison as to whether an item is underperforming
 	std::cout << std::setprecision(2) << std::fixed;//This ensures currency displays 2 numbers after the decimal place
-	Add_Text_File_To_Vector(objItems, inputFilePathItems);//Adds items currently stored in the text file.
+	
 	do
 	{
 		Login(objUsers, inputFilePathUsers);
-		File_Menu_System(objFile, inputFilePathFiles);
+		File_Menu_System(objFiles, inputFilePathFiles, inputFilePathItems);
+		
 		do
 		{
-			
+			Add_Text_File_To_Vector(objItems, inputFilePathItems);//Adds items currently stored in the text file.
 			bLogout = false;
 			std::cout << "===========================================\n";
 			std::cout << "\t\tSales System | Main Menu\n";
@@ -423,7 +424,10 @@ int main()
 				std::cout << "\n";
 			}
 			std::cout << "\n";
-		} while (bLogout == false);
-	} while (bValid == false);
+		} 
+
+		while (bLogout == false);
+	} 
+	while (bValid == false);
 }
 
