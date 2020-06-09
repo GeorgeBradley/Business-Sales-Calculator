@@ -11,7 +11,7 @@ std::size_t Select_File_From_Menu(std::string &inputFilePath, std::vector<std::s
 	}
 	else
 	{
-		std::cout << "Invalid\n";
+		std::cout << "#Invalid menu choice, please try again!#\n";
 	}
 }
 bool Is_Index_Valid(std::vector<std::string>& objFile, std::size_t stIndex)
@@ -23,7 +23,7 @@ bool Is_Index_Valid(std::vector<std::string>& objFile, std::size_t stIndex)
 	}
 	catch(...)
 	{
-		std::cout << "Invalid!\n";
+		Display_Invalid_Command_Message();
 		return false;
 	}
 }
@@ -36,7 +36,7 @@ void File_Menu_System(std::vector<std::string>& objFile, std::string& inputFileP
 	do 
 	{
 		Display_File_Menu();
-		Message_And_Input("\nEnter a number from the menu: ", &sChoice);
+		Message_And_Input("\nChoose a number from the file menu: ", &sChoice);
 		std::cout << "\n";
 		if (Is_Input_A_Number(sChoice, &iChoice) == true)
 		{
@@ -71,9 +71,9 @@ void File_Menu_System(std::vector<std::string>& objFile, std::string& inputFileP
 }
 void Display_File_Menu() 
 {
-	std::cout << "What would you like to do?\nChoose a number from the file menu...\n";
+	std::cout << "What would you like to do?\n";
 	std::cout << "1. Create a text file to store items in\n";
-	std::cout << "2. Choose from an existing file\n";
+	std::cout << "2. Choose from text-file library\n";
 }
 
 void Display_Existing_Files(std::vector<std::string>& objFiles, std::string& inputFilePath)
@@ -120,7 +120,7 @@ bool Add_New_File(std::string &inputFilePath, std::vector<std::string>&objFiles)
 	{
 		if (objFile == sNameOfNewTextFile + ".txt")
 		{
-			std::cout << "That file name already exists!\n\n";
+			std::cout << "#That file name already exists, please enter a unqiue name!#\n\n";
 			return false;
 		}
 	}
