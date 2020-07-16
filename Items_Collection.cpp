@@ -63,7 +63,7 @@ bool Items::Display_Underperforming_Items() const
 	{
 		for (std::size_t iCount = 0; iCount < objItems.size(); iCount++)
 		{
-			if (objItems.at(iCount).iQuantitySold < dFivePercentOfTotalSales)
+			if (objItems.at(iCount).Get_Quantity_Sold() < dFivePercentOfTotalSales)
 			{
 				iNumberOfUnderperforming++;
 				std::cout << "Item " << iCount + 1 << "\n";
@@ -86,7 +86,7 @@ void Items::Rewrite_Text_File(std::string inputFilePath)
 	file.open(inputFilePath);
 	for (const Item& objItem : objItems)
 	{
-		file << objItem.sItemName << "," << objItem.dSalePrice << "," << objItem.iQuantitySold << ",\n";
+		file << objItem.Get_Item_Name() << "," << objItem.Get_Sale_Price() << "," << objItem.Get_Quantity_Sold() << ",\n";
 	}
 	file.close();
 }
@@ -103,7 +103,7 @@ bool Items::Delete_An_Item(std::string inputFilePath)
 
 		//using the algorithm libary and is what's called "Lambda".
 		auto iIndex = std::find_if(objItems.begin(), objItems.end(),
-			[&](const Item& objItem) { return objItem.sItemName == sName; });
+			[&](const Item& objItem) { return objItem.Get_Item_Name() == sName; });
 
 		if (iIndex == objItems.end())
 		{ // not found
@@ -155,7 +155,7 @@ bool Items::Check_If_Item_Exists(std::string sInputName) const
 {
 	bool bExists = false;
 	auto it = std::find_if(objItems.begin(), objItems.end(),
-		[&](const Item& item) { return item.sItemName == sInputName; });
+		[&](const Item& item) { return item.Get_Item_Name() == sInputName; });
 	if (it == objItems.end())
 	{
 		bExists = false;
@@ -263,7 +263,7 @@ int Items::Total_Quantity_Sold() const
 	int iTotalQuantitySold = 0;
 	for (const Item& objItem : objItems)
 	{
-		iTotalQuantitySold += objItem.iQuantitySold;
+		iTotalQuantitySold += objItem.Get_Quantity_Sold();
 	}
 	return iTotalQuantitySold;
 }
@@ -275,9 +275,9 @@ std::size_t Items::Index_Of_Most_Sold_Item() const
 	std::size_t iIndexOfMostSoldItem = 0;
 	for (std::size_t iCount = 0; iCount < objItems.size(); iCount++)
 	{
-		if (objItems.at(iCount).iQuantitySold > iMostSoldItemValue)
+		if (objItems.at(iCount).Get_Quantity_Sold() > iMostSoldItemValue)
 		{
-			iMostSoldItemValue = objItems.at(iCount).iQuantitySold;
+			iMostSoldItemValue = objItems.at(iCount).Get_Quantity_Sold();
 			iIndexOfMostSoldItem = iCount;
 		}
 	}
@@ -296,12 +296,12 @@ bool Items::Display_Most_Sold_Item() const
 		return false;
 	}
 	std::size_t iIndexOfMostSoldItem = Index_Of_Most_Sold_Item();
-	int iMostSoldItem = objItems.at(iIndexOfMostSoldItem).iQuantitySold;
+	int iMostSoldItem = objItems.at(iIndexOfMostSoldItem).Get_Quantity_Sold();
 	int iCountNumberOfMostSoldItems = 1;
 
 	for (const auto& objItem : objItems)
 	{
-		if (objItem.iQuantitySold == iMostSoldItem)
+		if (objItem.Get_Quantity_Sold() == iMostSoldItem)
 		{
 			iCountNumberOfMostSoldItems++;
 		}
@@ -316,7 +316,7 @@ bool Items::Display_Most_Sold_Item() const
 		std::cout << "The highest selling item(s)...\n";
 		for (std::size_t iCount = 0; iCount < objItems.size(); iCount++)
 		{
-			if (objItems.at(iCount).iQuantitySold == iMostSoldItem)
+			if (objItems.at(iCount).Get_Quantity_Sold() == iMostSoldItem)
 			{
 				Display_Item_At_Index(iCount);
 			}
@@ -333,9 +333,9 @@ std::size_t Items::Index_Of_Least_Sold_Item() const
 
 	for (std::size_t iCount = 0; iCount < objItems.size(); iCount++)
 	{
-		if (objItems.at(iCount).iQuantitySold < iLeastSoldItem)
+		if (objItems.at(iCount).Get_Quantity_Sold() < iLeastSoldItem)
 		{
-			iLeastSoldItem = objItems.at(iCount).iQuantitySold;
+			iLeastSoldItem = objItems.at(iCount).Get_Quantity_Sold();
 			iIndexOfLeastSoldItem = iCount;
 		}
 	}
@@ -351,11 +351,11 @@ bool Items::Display_Least_Sold_Item() const
 		return false;
 	}
 	std::size_t iIndexOfLeastSoldItem = Index_Of_Least_Sold_Item();
-	int iLeastSoldItem = objItems.at(iIndexOfLeastSoldItem).iQuantitySold;
+	int iLeastSoldItem = objItems.at(iIndexOfLeastSoldItem).Get_Quantity_Sold();
 	int iCountNumberOfLeastSoldItems = 1;
 	for (int iCount = 0; iCount < objItems.size(); iCount++)
 	{
-		if (objItems.at(iCount).iQuantitySold == iLeastSoldItem)
+		if (objItems.at(iCount).Get_Quantity_Sold() == iLeastSoldItem)
 		{
 			iCountNumberOfLeastSoldItems++;
 		}
@@ -365,7 +365,7 @@ bool Items::Display_Least_Sold_Item() const
 		std::cout << "The lowest selling item(s)...\n";
 		for (std::size_t iCount = 0; iCount < objItems.size(); iCount++)
 		{
-			if (objItems.at(iCount).iQuantitySold == iLeastSoldItem)
+			if (objItems.at(iCount).Get_Quantity_Sold() == iLeastSoldItem)
 			{
 				Display_Item_At_Index(iCount);
 			}
@@ -376,7 +376,7 @@ bool Items::Display_Least_Sold_Item() const
 //This procedure displays the index of items vector of whatever is passed into it (through its single parameter), and is used several times in this program, namely in the functions: "Display_Underperforming_Items()", "Display_Least_Amount_Sold()", and "Display_Most_Amount_Sold()".
 void Items::Display_Item_At_Index(std::size_t iIndex) const
 {
-	objItems.at(iIndex).Display_Item();
+	std::cout << objItems.at(iIndex);
 }
 
 //This calculates the difference between the most sold and the least sold (in terms of quantity).
@@ -385,7 +385,7 @@ int Items::Difference_Between_Least_Most_Sold_Quantity()const
 	int iDifferenceBetweenMostLeast = 0;
 	std::size_t iMostSoldIndex = Index_Of_Most_Sold_Item();
 	std::size_t iLeastSoldIndex = Index_Of_Least_Sold_Item();
-	iDifferenceBetweenMostLeast = objItems.at(iMostSoldIndex).iQuantitySold - objItems.at(iLeastSoldIndex).iQuantitySold;
+	iDifferenceBetweenMostLeast = objItems.at(iMostSoldIndex).Get_Quantity_Sold() - objItems.at(iLeastSoldIndex).Get_Quantity_Sold();
 	return iDifferenceBetweenMostLeast;
 }
 //This calculates the total sales (not considering tax or operational costs).
@@ -430,7 +430,7 @@ bool Items::Print_Items() const
 		for (const Item& objItem : objItems)
 		{
 			std::cout << "Displaying information for item " << iCountNumber++ << "...\n";
-			objItem.Display_Item();
+			std::cout << objItem;
 		}
 	}
 	else
@@ -451,7 +451,7 @@ void Items::Display_Warning(const double dUnderperformingPercentage) const
 	{
 		for (const Item& Item : objItems)
 		{
-			if (Item.iQuantitySold < dPercentageOfTotalSales)
+			if (Item.Get_Quantity_Sold() < dPercentageOfTotalSales)
 			{
 				iNumberOfItemsUnderperforming++;
 			}
@@ -483,10 +483,10 @@ bool Items::Update_Quantity_Sold(std::string inputFilePath)
 		Message_And_Input("Enter the name of the item you wish to update the quantity of: ", &sFindName);
 		for (Item& objItem : objItems)
 		{
-			if (objItem.sItemName == sFindName)
+			if (objItem.Get_Item_Name() == sFindName)
 			{
-				iOriginalQuantity = objItem.iQuantitySold;
-				std::cout << "Update quantity sold from " << objItem.iQuantitySold << " to: ";
+				iOriginalQuantity = objItem.Get_Quantity_Sold();
+				std::cout << "Update quantity sold from " << objItem.Get_Quantity_Sold() << " to: ";
 				std::cin >> sUpdateQuantitySold;
 				if (Is_Input_A_Number(sUpdateQuantitySold, &iUpdateQuantitySold) == true) //checks if an error occurs
 				{
@@ -534,7 +534,7 @@ bool Items::Update_Item_Name(std::string inputFilePath)
 
 		for (Item& objItem : objItems)
 		{
-			if (objItem.sItemName == sFindName)
+			if (objItem.Get_Item_Name() == sFindName)
 			{
 				std::cout << "Change name to: ";
 				std::getline(std::cin >> std::ws, sUpdateName);
@@ -591,7 +591,7 @@ double Items::Total_Price_Sold() const
 	double dTotalPriceSold = 0;
 	for (const Item& objItem : objItems)
 	{
-		dTotalPriceSold += objItem.dSalePrice;
+		dTotalPriceSold += objItem.Get_Sale_Price();
 	}
 	return dTotalPriceSold;
 }

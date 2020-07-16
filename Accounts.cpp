@@ -19,7 +19,7 @@ bool Accounts::Does_Username_Exist(std::string& sUsername)
 {
 	for (const User& objUser : objUsers)
 	{
-		if (sUsername == objUser.sUsername)
+		if (sUsername == objUser.Get_User_Name())
 		{
 			std::cout << "Sorry, someone already has this username.\n";
 			return true;
@@ -35,7 +35,7 @@ void Accounts::Rewrite_Text_File(std::string inputFilePath)
 	file.open(inputFilePath);
 	for (const User& objUser : objUsers)
 	{
-		file << objUser.sUsername << "," << objUser.sPassword << ",\n";
+		file << objUser.Get_User_Name() << "," << objUser.Get_Password() << ",\n";
 	}
 	file.close();
 }
@@ -45,7 +45,7 @@ bool Accounts::Is_Login_Details_Correct(std::string& sInputtedUsername, std::str
 {
 	for (const User& objUser : objUsers)
 	{
-		if (objUser.sUsername == sInputtedUsername && objUser.sPassword == sInputtedPassword)
+		if (objUser.Get_User_Name() == sInputtedUsername && objUser.Get_Password() == sInputtedPassword)
 		{
 			std::cout << "You have successfully logged in.";
 			Confirm_Continue("\nPress any key to continue...");

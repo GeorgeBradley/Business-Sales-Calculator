@@ -11,28 +11,23 @@
 #include <limits.h> 
 
 //Struct for items
-struct Items
+class Items
 {
+public:
 	//Attribute vector of Item.
 	std::vector<Item>objItems;
 	//Member functions that perform all operations using the vector of objItems
-
 	//Text file operations for vector
 	void Rewrite_Text_File(std::string inputFilePath); //This re-writes the text file with the updated vector of items
-
 	std::size_t Size() const; //This returns the size of the vector<Item>objItems
 	bool Add_Item(std::string sFilePathway); //This adds item to the vector<Item>objItems
 	bool Delete_All_Items(std::string inputFilePath);//This deletes all items within the vector<Item>objItems
 	void Display_Warning(const double dUnderperformingPercentage) const; //This displays a warning if any of the the items consitutes less than 5% of total sales
 	void Display_Item_At_Index(std::size_t iIndex) const; //This displays the item of whatever index is passed into it
 	void Append_Item_To_Text_File(std::string inputFilePath, std::string sItemName, double dItemCost, int iQuantitySold);
-
-
 	std::size_t Index_Of_Least_Sold_Item() const; // returns the index of the least sold item
 	std::size_t Index_Of_Most_Sold_Item() const; // returns the index of the most sold item
-
 	int Total_Quantity_Sold() const; // returns the total quantity sold
-
 	bool Delete_An_Item(std::string inputFilePath); // Deletes an item
 	bool Update_Item_Name(std::string inputeFilePath); // updates item name
 	bool Update_Quantity_Sold(std::string inputeFilePath); // updates quantity sold
@@ -41,7 +36,6 @@ struct Items
 	bool Display_Underperforming_Items() const; //Displays the items which are underperforming (ones that constitutes less than 5% of total sales)_
 	bool Display_Least_Sold_Item() const; //Displays least sold item
 	bool Display_Most_Sold_Item() const; // Displays Most sold item
-
 	int Difference_Between_Least_Most_Sold_Quantity() const; //returns the difference between the least and most sold quantity
 	double Total_Sales() const; //Returns the total sales
 	double Tax_To_Pay_Amount(const double dTaxRate) const; // returns the tax to pay amount

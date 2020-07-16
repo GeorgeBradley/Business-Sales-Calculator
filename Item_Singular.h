@@ -1,29 +1,44 @@
 #pragma once
 #include <string>
 #include <iostream>
-struct Item
+class Item
 {
+	
+	
+private:
 	//Item attributes
 	std::string sItemName;
 	double dSalePrice;
 	int iQuantitySold;
-
+public:
 	//Constructor which uses initalisation list to create true initalization, as opposed to initalising in the body of the constructor which isn't true initalisation.
 	Item(std::string sInitItemName, double dInitSalePrice, int iInitQuantitySold)
 		:sItemName(sInitItemName), dSalePrice(dInitSalePrice), iQuantitySold(iInitQuantitySold) //initalisation list
 	{
 		//Nothing in body of this constructor as initalisation takes place two lines above
 	}
+	~Item() {
 
+	}
+	//Because I've privated the class attributes, I have created getters for each attribute
+	std::string Get_Item_Name() const
+	{
+		return sItemName;
+	}
+	//Getter
+	double Get_Sale_Price() const
+	{
+		return dSalePrice;
+	}
+	//Getter
+	int Get_Quantity_Sold() const
+	{
+		return iQuantitySold;
+	}
 	//Member function that displays item information.
 	void Display_Item() const
 	{
-		std::cout << "===================================\n";
-		std::cout << "\tName: " << sItemName << "\n";
-		std::cout << "\tSale Price: " << char(156) << dSalePrice << "\n";
-		std::cout << "\tQuantity Sold: " << iQuantitySold << "\n";
-		std::cout << "\tIndividual Sale Total: " << char(156) << Individual_Item_Sale() << "\n";
-		std::cout << "===================================\n";
+		
 	}
 
 	//Calculates individual item sale for an item
@@ -42,6 +57,17 @@ struct Item
 	void Update_Quantity_Sold(int* iUpdateQuantitySold)
 	{
 		iQuantitySold = *iUpdateQuantitySold;
+	}
+	//Overloading the << extraction operator to display Item
+	friend std::ostream& operator<<(std::ostream& os, const Item& rhs) {
+		os << "===================================\n"
+			<< "\tName" << rhs.sItemName << "\n"
+			<< "\tSale Price: " << char(156) << rhs.dSalePrice << "\n"
+			<< "\tQuantity Sold: " << rhs.iQuantitySold << "\n"
+			<< "\tIndividual Sale Total: " << char(156) << rhs.Individual_Item_Sale() << "\n"
+			<< "===================================\n";
+
+		return os;
 	}
 };
 

@@ -10,9 +10,11 @@
 #include "Functions.h"
 #include <cstdlib> 
 //This is the Login System struct called Accounts.
-struct Accounts
+class Accounts
 {
+private:
 	std::vector<User>objUsers; // account attribute
+public:
 	void Login_Attempts(int& iLoginAttempts);
 	void Rewrite_Text_File(std::string inputFilePath);
 	bool Is_Password_Secure(std::string sPassword);
