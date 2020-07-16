@@ -17,6 +17,11 @@ public:
 	{
 		//Nothing in body of this constructor as initalisation takes place two lines above
 	}
+	Item(const Item& objItem)
+		:Item(objItem.sItemName, objItem.dSalePrice, objItem.iQuantitySold)
+	{
+		std::cout << "Copy constructor being called\n";
+	}
 	~Item() {
 
 	}
@@ -58,6 +63,7 @@ public:
 	{
 		iQuantitySold = *iUpdateQuantitySold;
 	}
+	
 	//Overloading the << extraction operator to display Item
 	friend std::ostream& operator<<(std::ostream& os, const Item& rhs) {
 		os << "===================================\n"
