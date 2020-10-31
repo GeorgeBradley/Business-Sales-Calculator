@@ -20,7 +20,6 @@ public:
 	Item(const Item& objItem)
 		:Item(objItem.sItemName, objItem.dSalePrice, objItem.iQuantitySold)
 	{
-		std::cout << "Copy constructor being called\n";
 	}
 	~Item() {
 

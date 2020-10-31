@@ -19,7 +19,7 @@ public:
 	void Rewrite_Text_File(std::string inputFilePath);
 	bool Is_Password_Secure(std::string sPassword);
 	bool Is_Length_of_Username_Valid(std::string sUsername, std::size_t stMinLength) const;
-	bool Does_Username_Exist(std::string& sUsername);
+	bool Does_Username_Exist(std::string& sUsername)const;
 	bool Is_Login_Details_Correct(std::string& sInputtedUsername, std::string& sInputtedPassword, int& iAttempts);
 	bool Create_Account(std::string& inputFilePath);
 	bool Login_To_Account(int& iLoginAttempts);

@@ -15,17 +15,20 @@ void Accounts::Login_Attempts(int& iLoginAttempts)
 	}
 }
 //This checks if username exists to prevent duplicate usernames
-bool Accounts::Does_Username_Exist(std::string& sUsername)
+bool Accounts::Does_Username_Exist(std::string& sUsername)const
 {
-	for (const User& objUser : objUsers)
-	{
-		if (sUsername == objUser.Get_User_Name())
-		{
-			std::cout << "Sorry, someone already has this username.\n";
-			return true;
-		}
+	//I've used the find_if from the <algorithm> library to 
+   //ascertain whether an item has the same name as the string which is passed in as a parameter
+	auto it = std::find_if(objUsers.begin(), objUsers.end(),
+		[&](const auto& objUser) { return objUser.Get_User_Name() == sUsername; });
+	if (it == objUsers.end()) {
+		return true;//If it gets to the end of the vector then it means it's unique
 	}
-	return false;
+	else {
+		//If it reaches false it means there's already an item with the same name as the string parameter 
+		std::cout << "\nTry again! There's already a user with that name.\n";
+		return false;
+	}
 }
 //This function is used everytime an update is made within the vector<Item>.
 void Accounts::Rewrite_Text_File(std::string inputFilePath)
