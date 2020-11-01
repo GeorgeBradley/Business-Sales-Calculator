@@ -64,7 +64,7 @@ public:
 	//Overloading the << extraction operator to display Item
 	friend std::ostream& operator<<(std::ostream& os, const Item& rhs) {
 		os << "===================================\n"
-			<< "\tName" << rhs.sItemName << "\n"
+			<< "\tName: " << rhs.sItemName << "\n"
 			<< "\tSale Price: " << char(156) << rhs.dSalePrice << "\n"
 			<< "\tQuantity Sold: " << rhs.iQuantitySold << "\n"
 			<< "\tIndividual Sale Total: " << char(156) << rhs.Individual_Item_Sale() << "\n"

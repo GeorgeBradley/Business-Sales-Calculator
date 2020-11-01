@@ -43,5 +43,6 @@ public:
 	double Total_Price_Sold() const; //returns the total price sold
 	double Estimated_Operational_Cost(const double dOperationalCostPercentage) const; // returns the estimated operational cost
 	double Average_Sale() const;
+
 };
 

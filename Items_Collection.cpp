@@ -369,16 +369,25 @@ bool Items::Display_Least_Sold_Item() const
 			iCountNumberOfLeastSoldItems++;
 		}
 	}
+	
 	if (iCountNumberOfLeastSoldItems >= 1)
 	{
 		std::cout << "The lowest selling item(s)...\n";
-		for (std::size_t iCount = 0; iCount < objItems.size(); iCount++)
+		std::for_each(objItems.begin(), objItems.end(), [&](auto& objItem) 
+			{
+             if (objItem.Get_Quantity_Sold() == iLeastSoldItem)
+             {
+				 std::cout << objItem;
+             }
+			});
+		
+		/*for (std::size_t iCount = 0; iCount < objItems.size(); iCount++)
 		{
 			if (objItems.at(iCount).Get_Quantity_Sold() == iLeastSoldItem)
 			{
 				Display_Item_At_Index(iCount);
 			}
-		}
+		}*/
 	}
 	return true;
 }
@@ -593,7 +602,6 @@ double Items::Average_Sale() const
 {
 	return Total_Quantity_Sold() / (int)objItems.size();
 }
-
 //Calculates the total price.
 double Items::Total_Price_Sold() const
 {
