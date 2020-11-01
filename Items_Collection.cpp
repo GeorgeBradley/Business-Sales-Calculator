@@ -597,11 +597,15 @@ double Items::Average_Sale() const
 //Calculates the total price.
 double Items::Total_Price_Sold() const
 {
-	double dTotalPriceSold = 0;
+	auto totalPriceSold = std::accumulate(objItems.begin(), objItems.end(), 0.0,
+	[](auto& accum, auto& objItem) { return accum + objItem.Get_Sale_Price();});
+	return totalPriceSold;
+	
+	/*double dTotalPriceSold = 0;
 	for (const Item& objItem : objItems)
 	{
 		dTotalPriceSold += objItem.Get_Sale_Price();
 	}
-	return dTotalPriceSold;
+	return dTotalPriceSold;*/
 }
 

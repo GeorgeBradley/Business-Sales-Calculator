@@ -64,8 +64,10 @@ void AdditionalMenu(Items* objItems, std::string inputFilePath)
 
 		if (Is_Input_A_Number(sChoice, &iChoice) == true)
 		{
+
 			switch (iChoice)
 			{
+
 			case 0:
 				std::cout << "\nYou've chosen option 0.";
 				bExitAdditionalMenu = true;
@@ -136,6 +138,7 @@ void AdditionalMenu(Items* objItems, std::string inputFilePath)
 
 	} while (bExitAdditionalMenu == false);
 }
+
 void Display_Login_Menu() {
 	std::cout << "===============================================================================\n";
 	std::cout << "\t\tLOGIN TO USE SALES SYSTEM\n";
