@@ -9,7 +9,7 @@
 #include <string> //This allows for the use of strings.
 #include <iomanip> //Used for controlling how many numbers after decimal point.
 #include <limits.h> 
-
+#include <algorithm>
 //Struct for items
 class Items
 {
@@ -25,8 +25,8 @@ public:
 	void Display_Warning(const double dUnderperformingPercentage) const; //This displays a warning if any of the the items consitutes less than 5% of total sales
 	void Display_Item_At_Index(std::size_t iIndex) const; //This displays the item of whatever index is passed into it
 	void Append_Item_To_Text_File(std::string inputFilePath, std::string sItemName, double dItemCost, int iQuantitySold);
-	std::size_t Index_Of_Least_Sold_Item() const; // returns the index of the least sold item
-	std::size_t Index_Of_Most_Sold_Item() const; // returns the index of the most sold item
+	auto Least_Sold_Item() const; // returns the index of the least sold item
+	auto Most_Sold_Item() const; // returns the index of the most sold item
 	int Total_Quantity_Sold() const; // returns the total quantity sold
 	bool Delete_An_Item(std::string inputFilePath); // Deletes an item
 	bool Update_Item_Name(std::string inputeFilePath); // updates item name

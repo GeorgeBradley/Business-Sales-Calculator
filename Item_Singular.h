@@ -3,8 +3,6 @@
 #include <iostream>
 class Item
 {
-	
-	
 private:
 	//Item attributes
 	std::string sItemName;

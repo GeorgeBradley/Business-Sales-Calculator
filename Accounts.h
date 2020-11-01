@@ -25,5 +25,4 @@ public:
 	bool Login_To_Account(int& iLoginAttempts);
 	void Append_Credential_To_Text_File(std::string& inputFilePath, std::string& sUsername, std::string& sPassword);
 	void Add_Text_File_To_Vector(std::string& inputFilePath);
-	void Enter_Credentials(std::string& sInputUsername, std::string& sInputPassword);
 };

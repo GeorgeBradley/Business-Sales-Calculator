@@ -54,7 +54,7 @@ bool Items::Display_Underperforming_Items() const
 {
 	double dFivePercentOfTotalSales = Total_Quantity_Sold() * 0.05; //This ascertains 5% of total sales so it can be compared with individual items.
 	int iNumberOfUnderperforming = 0; //This variable is used to count how many items are underperforming within the for loop
-
+	int iCount = 0;
 	if (objItems.size() == 0) //First checks if objItems size is equal to 0, if it is will prompt user to add an item.
 	{
 		Nothing_To_Display_Message();
@@ -100,25 +100,18 @@ bool Items::Delete_An_Item(std::string inputFilePath)
 	if (objItems.size() != 0)
 	{
 		Message_And_Input("Enter the name of item you wish to delete: ", &sName);
-
 		//using the algorithm libary and is what's called "Lambda".
 		auto iIndex = std::find_if(objItems.begin(), objItems.end(),
 			[&](const Item& objItem) { return objItem.Get_Item_Name() == sName; });
 
-		if (iIndex == objItems.end())
-		{ // not found
-			std::cout << "The item you're trying to delete doesn't exist.\n";
-			return false;
-		}
-		else
+		if (iIndex != objItems.end())
 		{
 			do
 			{
 				do
 				{
 					Message_And_Input("Are you sure you want to delete this item? (y/n): ", &cChoice);
-				} 
-				while (Is_Input_Valid());
+				} while (Is_Input_Valid());
 
 				cChoice = std::toupper(cChoice);
 				if (cChoice == 'Y')
@@ -138,8 +131,12 @@ bool Items::Delete_An_Item(std::string inputFilePath)
 					Perform_Invalid_Operation();
 					bContinue = false;
 				}
-			} 
-			while (bContinue == false);
+			} while (bContinue == false);	
+		}
+		else
+		{
+			std::cout << "The item you're trying to delete doesn't exist.\n";
+			return false;
 		}
 	}
 	else
@@ -162,7 +159,6 @@ bool Items::Check_If_Item_Exists(std::string sInputName) const
 	}
 	else
 	{
-
 		std::cout << "\nTry again! There's already an item with that name.\n\n";
 		bExists = true;
 	}
@@ -188,8 +184,6 @@ bool Items::Add_Item(std::string sFilePathway)
 	std::string sInputQuantity = "";
 
 	//This is where the iHowManyItems is used to loop through the number to push_back() items to objItems vector
-
-	
 	do
 	{
 		std::cout << "\n";
@@ -211,9 +205,11 @@ bool Items::Add_Item(std::string sFilePathway)
 		do
 		{
 			Message_And_Input("\tSale price: ", 156, &sInputSalePrice);
-		} while (Is_Input_A_Number(sInputSalePrice, &dInputSalePrice) == false);
+		} 
+		while (Is_Input_A_Number(sInputSalePrice, &dInputSalePrice) == false);
 
-	} while (Boundary_Check_Value_Is_Valid(dInputSalePrice, 0.0, 10000000.0) == false);
+	} 
+	while (Boundary_Check_Value_Is_Valid(dInputSalePrice, 0.0, 10000000.0) == false);
 
 	do
 	{
@@ -237,7 +233,7 @@ bool Items::Add_Item(std::string sFilePathway)
 		if (cChoice == 'Y')
 		{
 			std::cout << "Item has been succesfully added!\n";
-			objItems.push_back(Item{ sInputName, dInputSalePrice, iInputQuantity });//using push_back to add item using constuctor parameters
+			objItems.emplace_back(Item{ sInputName, dInputSalePrice, iInputQuantity });//using push_back to add item using constuctor parameters
 			Append_Item_To_Text_File(sFilePathway, sInputName, dInputSalePrice, iInputQuantity);
 			bContinue = true;
 		}
@@ -260,18 +256,25 @@ bool Items::Add_Item(std::string sFilePathway)
 //This procedure loops through the vector using a "Ranged Based For Loop" and adds the quantity of all sold items collectively to generate a total.
 int Items::Total_Quantity_Sold() const
 {
-	int iTotalQuantitySold = 0;
+	auto sum = std::accumulate(objItems.begin(), objItems.end(), 0, 
+		[](auto& accum, auto& objItem) { return accum + objItem.Get_Quantity_Sold(); });
+	return sum;
+	/*int iTotalQuantitySold = 0;
 	for (const Item& objItem : objItems)
 	{
 		iTotalQuantitySold += objItem.Get_Quantity_Sold();
 	}
-	return iTotalQuantitySold;
+	return iTotalQuantitySold;*/
 }
 
 //This function returns the element index of the items vector of the most sold item.
-std::size_t Items::Index_Of_Most_Sold_Item() const
+auto Items::Most_Sold_Item() const
 {
-	int iMostSoldItemValue = 0;
+	auto highest_grade_it = std::max_element(objItems.begin(), objItems.end(), [](auto& a, auto& b) {
+		return a.Get_Quantity_Sold() < b.Get_Quantity_Sold();
+		});
+	return highest_grade_it;
+	/*int iMostSoldItemValue = 0;
 	std::size_t iIndexOfMostSoldItem = 0;
 	for (std::size_t iCount = 0; iCount < objItems.size(); iCount++)
 	{
@@ -281,7 +284,7 @@ std::size_t Items::Index_Of_Most_Sold_Item() const
 			iIndexOfMostSoldItem = iCount;
 		}
 	}
-	return iIndexOfMostSoldItem;
+	return iIndexOfMostSoldItem;*/
 }
 
 //This procedure calls the function "Index_Of_Most_Sold_Item()" to return the index of the most sold item. 
@@ -295,28 +298,29 @@ bool Items::Display_Most_Sold_Item() const
 		Nothing_To_Display_Message();
 		return false;
 	}
-	std::size_t iIndexOfMostSoldItem = Index_Of_Most_Sold_Item();
-	int iMostSoldItem = objItems.at(iIndexOfMostSoldItem).Get_Quantity_Sold();
+	auto MostSoldItem = Most_Sold_Item();
 	int iCountNumberOfMostSoldItems = 1;
 
 	for (const auto& objItem : objItems)
 	{
-		if (objItem.Get_Quantity_Sold() == iMostSoldItem)
+		if (objItem.Get_Quantity_Sold() == MostSoldItem->Get_Quantity_Sold())
 		{
 			iCountNumberOfMostSoldItems++;
 		}
 	}
 
-	if (iMostSoldItem == 0)
+	if (MostSoldItem->Get_Quantity_Sold() == 0)
 	{
 		std::cout << "None of your sales exceeded profit greater than 0.\n";
 	}
 	else if (iCountNumberOfMostSoldItems >= 1)
 	{
 		std::cout << "The highest selling item(s)...\n";
+
+	
 		for (std::size_t iCount = 0; iCount < objItems.size(); iCount++)
 		{
-			if (objItems.at(iCount).Get_Quantity_Sold() == iMostSoldItem)
+			if (objItems.at(iCount).Get_Quantity_Sold() == MostSoldItem->Get_Quantity_Sold())
 			{
 				Display_Item_At_Index(iCount);
 			}
@@ -326,9 +330,14 @@ bool Items::Display_Most_Sold_Item() const
 }
 
 //Returns the index of element in the items vector to the item that has sold the least amount.
-std::size_t Items::Index_Of_Least_Sold_Item() const
+auto Items::Least_Sold_Item() const
 {
-	int iLeastSoldItem = INT_MAX;
+	auto lowest_grade_it = std::min_element(objItems.begin(), objItems.end(), [](auto& a, auto& b) {
+		return a.Get_Quantity_Sold() < b.Get_Quantity_Sold();
+		});
+	return lowest_grade_it;
+
+	/*int iLeastSoldItem = INT_MAX;
 	std::size_t iIndexOfLeastSoldItem = 0;
 
 	for (std::size_t iCount = 0; iCount < objItems.size(); iCount++)
@@ -339,7 +348,7 @@ std::size_t Items::Index_Of_Least_Sold_Item() const
 			iIndexOfLeastSoldItem = iCount;
 		}
 	}
-	return iIndexOfLeastSoldItem;
+	return iIndexOfLeastSoldItem;*/
 }
 
 //The same logic as the procedure "Display_Most_Sold_Item()" is applied to this one. This displays the least sold item/s.
@@ -350,8 +359,8 @@ bool Items::Display_Least_Sold_Item() const
 		Nothing_To_Display_Message();
 		return false;
 	}
-	std::size_t iIndexOfLeastSoldItem = Index_Of_Least_Sold_Item();
-	int iLeastSoldItem = objItems.at(iIndexOfLeastSoldItem).Get_Quantity_Sold();
+	auto LeastSoldItem = Least_Sold_Item();
+	int iLeastSoldItem = LeastSoldItem->Get_Quantity_Sold();
 	int iCountNumberOfLeastSoldItems = 1;
 	for (int iCount = 0; iCount < objItems.size(); iCount++)
 	{
@@ -382,26 +391,26 @@ void Items::Display_Item_At_Index(std::size_t iIndex) const
 //This calculates the difference between the most sold and the least sold (in terms of quantity).
 int Items::Difference_Between_Least_Most_Sold_Quantity()const
 {
-	int iDifferenceBetweenMostLeast = 0;
-	std::size_t iMostSoldIndex = Index_Of_Most_Sold_Item();
-	std::size_t iLeastSoldIndex = Index_Of_Least_Sold_Item();
-	iDifferenceBetweenMostLeast = objItems.at(iMostSoldIndex).Get_Quantity_Sold() - objItems.at(iLeastSoldIndex).Get_Quantity_Sold();
-	return iDifferenceBetweenMostLeast;
+	return Most_Sold_Item()->Get_Quantity_Sold() - Least_Sold_Item()->Get_Quantity_Sold();
 }
+
 //This calculates the total sales (not considering tax or operational costs).
 double Items::Total_Sales() const
 {
 	double dTotalSales = 0;
-	if (objItems.size() == 0)
+	if (objItems.size() != 0)
 	{
-		Nothing_To_Display_Message();
+		/*for (const Item& objItem : objItems)
+		{
+			dTotalSales += objItem.Individual_Item_Sale();
+		}*/
+		dTotalSales = std::accumulate(objItems.begin(), objItems.end(), 0.0,
+			[](auto& accum, auto& objItem) { return accum + objItem.Individual_Item_Sale(); });
+		
 	}
 	else
 	{
-		for (const Item& objItem : objItems)
-		{
-			dTotalSales += objItem.Individual_Item_Sale();
-		}
+		Nothing_To_Display_Message();
 	}
 	return dTotalSales;
 }

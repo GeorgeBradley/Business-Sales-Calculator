@@ -76,6 +76,7 @@ bool Accounts::Is_Length_of_Username_Valid(std::string sUsername, std::size_t st
 bool Accounts::Is_Password_Secure(std::string sPassword)
 {
 	std::cout << "\n";
+
 	if (sPassword.size() < 5)
 	{
 		std::cout << "Your password isn't very strong. Please try again.\n\n";
@@ -93,7 +94,7 @@ bool Accounts::Create_Account(std::string& inputFilePath)
 	Message_And_Input("Enter a new username: ", &sUsername);
 	if (Is_Length_of_Username_Valid(sUsername, 2) == true && Is_String_Character_Allowed(sUsername) == true)
 	{
-		if (Does_Username_Exist(sUsername) == false)
+		if (Does_Username_Exist(sUsername) == true)
 		{
 			do
 			{
@@ -151,15 +152,9 @@ bool Accounts::Login_To_Account(int& iLoginAttempts)
 	std::string sInputUsername;
 	std::string sInputPassword;
 	std::cout << "Login using either guess or personal credentials\n"; \
-		Enter_Credentials(sInputUsername, sInputPassword);
-	if (Is_Login_Details_Correct(sInputUsername, sInputPassword, iLoginAttempts) == false)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
+	Message_And_Input("Enter your username: ", &sInputUsername);
+	Message_And_Input("Enter your password: ", &sInputPassword);
+	return (Is_Login_Details_Correct(sInputUsername, sInputPassword, iLoginAttempts)) ? true : false;
 }
 
 //This appends a new credential to text file
@@ -195,10 +190,3 @@ void Accounts::Add_Text_File_To_Vector(std::string& inputFilePath)
 	}
 }
 
-//This is where user enters their username and password
-void Accounts::Enter_Credentials(std::string& sInputUsername, std::string& sInputPassword)
-{
-	Message_And_Input("Enter your username: ", &sInputUsername);
-	Message_And_Input("Enter your password: ", &sInputPassword);
-	std::cout << "\n";
-}
