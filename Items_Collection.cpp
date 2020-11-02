@@ -18,8 +18,8 @@ bool Items::Delete_All_Items(std::string inputFilePath)
 			do
 			{
 				Message_And_Input("Are you sure you want to delete all items? (y/n): ", &cChoice);
-			} while (Is_Input_Valid());
-
+			} 
+			while (Is_Input_Valid());
 			cChoice = toupper(cChoice);
 			if (cChoice == 'Y')
 			{
@@ -61,15 +61,14 @@ bool Items::Display_Underperforming_Items() const
 	}
 	else
 	{
-		for (std::size_t iCount = 0; iCount < objItems.size(); iCount++)
-		{
-			if (objItems.at(iCount).Get_Quantity_Sold() < dFivePercentOfTotalSales)
+		std::for_each(objItems.begin(), objItems.end(), [&](auto &objItem) {
+			if (objItem.Get_Quantity_Sold() < dFivePercentOfTotalSales)
 			{
 				iNumberOfUnderperforming++;
 				std::cout << "Item " << iCount + 1 << "\n";
-				Display_Item_At_Index(iCount);
+				std::cout << objItem;
 			}
-		}
+			});
 	}
 
 	if (objItems.size() > 0 && iNumberOfUnderperforming == 0)
@@ -318,8 +317,6 @@ bool Items::Display_Most_Sold_Item() const
 	else if (iCountNumberOfMostSoldItems >= 1)
 	{
 		std::cout << "The highest selling item(s)...\n";
-
-	
 		for (std::size_t iCount = 0; iCount < objItems.size(); iCount++)
 		{
 			if (objItems.at(iCount).Get_Quantity_Sold() == MostSoldItem->Get_Quantity_Sold())
@@ -363,26 +360,23 @@ bool Items::Display_Least_Sold_Item() const
 	}
 	auto LeastSoldItem = Least_Sold_Item();
 	int iLeastSoldItem = LeastSoldItem->Get_Quantity_Sold();
-	int iCountNumberOfLeastSoldItems = 1;
-	for (int iCount = 0; iCount < objItems.size(); iCount++)
+	int iCountNumberOfLeastSoldItems = std::count_if(objItems.begin(), objItems.end(), [&](auto &objItem) {
+		return objItem.Get_Quantity_Sold() == iLeastSoldItem;
+		});
+	/*for (int iCount = 0; iCount < objItems.size(); iCount++)
 	{
 		if (objItems.at(iCount).Get_Quantity_Sold() == iLeastSoldItem)
 		{
 			iCountNumberOfLeastSoldItems++;
 		}
-	}
-	
+	}*/
 	if (iCountNumberOfLeastSoldItems >= 1)
 	{
 		std::cout << "The lowest selling item(s)...\n";
-		std::for_each(objItems.begin(), objItems.end(), [&](auto& objItem) 
-			{
-             if (objItem.Get_Quantity_Sold() == iLeastSoldItem)
-             {
+		std::for_each(objItems.begin(), objItems.end(), [&](auto& objItem) {
+             if (objItem.Get_Quantity_Sold() == iLeastSoldItem){
 				 std::cout << objItem;
-             }
-			});
-		
+             }});	
 		/*for (std::size_t iCount = 0; iCount < objItems.size(); iCount++)
 		{
 			if (objItems.at(iCount).Get_Quantity_Sold() == iLeastSoldItem)
@@ -416,8 +410,10 @@ double Items::Total_Sales() const
 			dTotalSales += objItem.Individual_Item_Sale();
 		}*/
 		dTotalSales = std::accumulate(objItems.begin(), objItems.end(), 0.0,
-			[](auto& accum, auto& objItem) { return accum + objItem.Individual_Item_Sale(); });
-		
+			[](auto& accum, auto& objItem) 
+			{ 
+				return accum + objItem.Individual_Item_Sale(); 
+			});
 	}
 	else
 	{
@@ -447,11 +443,14 @@ bool Items::Print_Items() const
 	int iCountNumber = 1;
 	if (objItems.size() != 0)
 	{
-		for (const Item& objItem : objItems)
+		std::for_each(objItems.begin(), objItems.end(), [&iCountNumber](auto &objItem) {
+			std::cout << "Displaying information for item " << iCountNumber++ << "...\n";
+			std::cout << objItem;});
+		/*for (const Item& objItem : objItems)
 		{
 			std::cout << "Displaying information for item " << iCountNumber++ << "...\n";
 			std::cout << objItem;
-		}
+		}*/
 	}
 	else
 	{
@@ -465,17 +464,18 @@ bool Items::Print_Items() const
 void Items::Display_Warning(const double dUnderperformingPercentage) const
 {
 	double dPercentageOfTotalSales = Total_Quantity_Sold() * dUnderperformingPercentage;
-	int iNumberOfItemsUnderperforming = 0;
-
 	if (objItems.size() != 0)
 	{
-		for (const Item& Item : objItems)
+		int iNumberOfItemsUnderperforming = std::count_if(objItems.begin(), objItems.end(),
+			[&dPercentageOfTotalSales](auto& objItem){
+				return objItem.Get_Quantity_Sold() < dPercentageOfTotalSales;});
+		/*for (const Item& Item : objItems)
 		{
 			if (Item.Get_Quantity_Sold() < dPercentageOfTotalSales)
 			{
 				iNumberOfItemsUnderperforming++;
 			}
-		}
+		}*/
 
 		if (iNumberOfItemsUnderperforming >= 1)
 		{
@@ -552,45 +552,55 @@ bool Items::Update_Item_Name(std::string inputFilePath)
 		Message_And_Input("Enter the name of the item you wish to rename: ", &sFindName);
 		sOriginalName = sFindName;
 
-		for (Item& objItem : objItems)
+		auto it = std::find_if(objItems.begin(), objItems.end(), [&](auto &objItem) {
+			return objItem.Get_Item_Name() == sFindName;
+			});
+
+		if (it != objItems.end()) 
+		{
+			std::cout << "Change name to: ";
+			std::getline(std::cin >> std::ws, sUpdateName);
+			if (Check_If_Item_Exists(sUpdateName) == true)
+			{
+				return false;
+			}
+			bool bContinue = false;
+			do
+			{
+				do
+				{
+					Message_And_Input("Are you sure you want to update the name of this item? (y/n): ", &cChoice);
+				} 
+				while (Is_Input_Valid());
+
+				cChoice = toupper(cChoice);
+				if (cChoice == 'Y')
+				{
+					it->Update_Name(&sUpdateName);
+					std::cout << sOriginalName << " has been changed to " << sUpdateName << ".\n";
+					Rewrite_Text_File(inputFilePath);
+					return true;
+				}
+				else if (cChoice == 'N')
+				{
+					std::cout << "You've chosen not to rename " << sOriginalName << " to " << sUpdateName << "\n";
+					return false;
+				}
+				else
+				{
+					bContinue = false;
+					Perform_Invalid_Operation();
+				}
+			} while (bContinue == false);
+
+		}
+		/*for (Item& objItem : objItems)
 		{
 			if (objItem.Get_Item_Name() == sFindName)
 			{
-				std::cout << "Change name to: ";
-				std::getline(std::cin >> std::ws, sUpdateName);
-				if (Check_If_Item_Exists(sUpdateName) == true)
-				{
-					return false;
-				}
-				bool bContinue = false;
-				do
-				{
-					do
-					{
-						Message_And_Input("Are you sure you want to update the name of this item? (y/n): ", &cChoice);
-					} while (Is_Input_Valid());
-
-					cChoice = toupper(cChoice);
-					if (cChoice == 'Y')
-					{
-						objItem.Update_Name(&sUpdateName);
-						std::cout << sOriginalName << " has been changed to " << sUpdateName << ".\n";
-						Rewrite_Text_File(inputFilePath);
-						return true;
-					}
-					else if (cChoice == 'N')
-					{
-						std::cout << "You've chosen not to rename " << sOriginalName << " to " << sUpdateName << "\n";
-						return false;
-					}
-					else
-					{
-						bContinue = false;
-						Perform_Invalid_Operation();
-					}
-				} while (bContinue == false);
+				
 			}
-		}
+		}*/
 		std::cout << "Couldn't find '" << sFindName << "'.\n";
 	}
 	else
@@ -599,11 +609,13 @@ bool Items::Update_Item_Name(std::string inputFilePath)
 	}
 	return false;
 }
+
 //This function returns the average sale
 double Items::Average_Sale() const
 {
 	return Total_Quantity_Sold() / (int)objItems.size();
 }
+
 //Calculates the total price.
 double Items::Total_Price_Sold() const
 {
