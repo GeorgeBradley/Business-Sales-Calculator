@@ -46,7 +46,15 @@ void Accounts::Rewrite_Text_File(std::string inputFilePath)
 //Checks if Login details are correct.
 bool Accounts::Is_Login_Details_Correct(std::string& sInputtedUsername, std::string& sInputtedPassword, int& iAttempts)
 {
-	for (const User& objUser : objUsers)
+	auto it = std::find_if(objUsers.begin(), objUsers.end(), [&](auto &objUser) {
+		return objUser.Get_User_Name() == sInputtedUsername && objUser.Get_Password() == sInputtedPassword;
+		});
+	if (it != objUsers.end()) {
+		std::cout << "You have successfully logged in.";
+		Confirm_Continue("\nPress any key to continue...");
+		return true;
+	}
+	/*for (const User& objUser : objUsers)
 	{
 		if (objUser.Get_User_Name() == sInputtedUsername && objUser.Get_Password() == sInputtedPassword)
 		{
@@ -54,7 +62,7 @@ bool Accounts::Is_Login_Details_Correct(std::string& sInputtedUsername, std::str
 			Confirm_Continue("\nPress any key to continue...");
 			return true;
 		}
-	}
+	}*/
 	Login_Attempts(iAttempts);
 	Confirm_Continue("\nPress any key to continue...");
 	return false;
@@ -101,10 +109,11 @@ bool Accounts::Create_Account(std::string& inputFilePath)
 				do
 				{
 					Message_And_Input("Enter your new password: ", &sPassword);
+				} 
+				while (Is_String_Character_Allowed(sPassword) == false);
+			} 
+			while (Is_Password_Secure(sPassword) == false);
 
-				} while (Is_String_Character_Allowed(sPassword) == false);
-
-			} while (Is_Password_Secure(sPassword) == false);
 			bool bContinue = false;
 			do
 			{
@@ -113,8 +122,7 @@ bool Accounts::Create_Account(std::string& inputFilePath)
 					Message_And_Input("Do you wish to create an account with the details you've just provided? (y/n): ", &cChoice);
 				} while (Is_Input_Valid());
 
-
-				cChoice = toupper(cChoice);
+				cChoice = std::toupper(cChoice);
 				if (cChoice == 'Y')
 				{
 					std::cout << "Account successfully created!\n";
@@ -133,8 +141,8 @@ bool Accounts::Create_Account(std::string& inputFilePath)
 					Perform_Invalid_Operation();
 					std::cout << "\n";
 				}
-
-			} while (bContinue == false);
+			} 
+			while (bContinue == false);
 		}
 		else
 		{
@@ -145,6 +153,7 @@ bool Accounts::Create_Account(std::string& inputFilePath)
 	{
 		return false;
 	}
+	return false;
 }
 //where user logins in to account
 bool Accounts::Login_To_Account(int& iLoginAttempts)

@@ -68,9 +68,8 @@ bool Items::Display_Underperforming_Items() const
 				std::cout << "Item " << iCount + 1 << "\n";
 				std::cout << objItem;
 			}
-			});
+		});
 	}
-
 	if (objItems.size() > 0 && iNumberOfUnderperforming == 0)
 	{
 		std::cout << "There are currently no underperforming items.\n";
@@ -102,7 +101,6 @@ bool Items::Delete_An_Item(std::string inputFilePath)
 		//using the algorithm libary and is what's called "Lambda".
 		auto iIndex = std::find_if(objItems.begin(), objItems.end(),
 			[&](const Item& objItem) { return objItem.Get_Item_Name() == sName; });
-
 		if (iIndex != objItems.end())
 		{
 			do
@@ -298,11 +296,11 @@ bool Items::Display_Most_Sold_Item() const
 		return false;
 	}
 	auto MostSoldItem = Most_Sold_Item();
-	int iCountNumberOfMostSoldItems = std::count_if(objItems.begin(), objItems.end(), 
+	int iCountNumberOfMostSoldItems = static_cast<int>(std::count_if(objItems.begin(), objItems.end(), 
 		[&](auto& objItem) 
 		{
 			return objItem.Get_Quantity_Sold() == MostSoldItem->Get_Quantity_Sold();
-		});
+		}));
 	/*for (const auto& objItem : objItems)
 	{
 		if (objItem.Get_Quantity_Sold() == MostSoldItem->Get_Quantity_Sold())
@@ -317,13 +315,19 @@ bool Items::Display_Most_Sold_Item() const
 	else if (iCountNumberOfMostSoldItems >= 1)
 	{
 		std::cout << "The highest selling item(s)...\n";
-		for (std::size_t iCount = 0; iCount < objItems.size(); iCount++)
+		std::for_each(objItems.begin(), objItems.end(), [&](auto &objItem) {
+				if (objItem.Get_Quantity_Sold() == MostSoldItem->Get_Quantity_Sold())
+				{
+					std::cout << objItem;
+				}
+			});
+		/*for (std::size_t iCount = 0; iCount < objItems.size(); iCount++)
 		{
 			if (objItems.at(iCount).Get_Quantity_Sold() == MostSoldItem->Get_Quantity_Sold())
 			{
 				Display_Item_At_Index(iCount);
 			}
-		}
+		}*/
 	}
 	return true;
 }
@@ -360,9 +364,10 @@ bool Items::Display_Least_Sold_Item() const
 	}
 	auto LeastSoldItem = Least_Sold_Item();
 	int iLeastSoldItem = LeastSoldItem->Get_Quantity_Sold();
-	int iCountNumberOfLeastSoldItems = std::count_if(objItems.begin(), objItems.end(), [&](auto &objItem) {
+	int iCountNumberOfLeastSoldItems = static_cast<int>(std::count_if(objItems.begin(), 
+		objItems.end(), [&](auto &objItem) {
 		return objItem.Get_Quantity_Sold() == iLeastSoldItem;
-		});
+		}));
 	/*for (int iCount = 0; iCount < objItems.size(); iCount++)
 	{
 		if (objItems.at(iCount).Get_Quantity_Sold() == iLeastSoldItem)
@@ -466,9 +471,9 @@ void Items::Display_Warning(const double dUnderperformingPercentage) const
 	double dPercentageOfTotalSales = Total_Quantity_Sold() * dUnderperformingPercentage;
 	if (objItems.size() != 0)
 	{
-		int iNumberOfItemsUnderperforming = std::count_if(objItems.begin(), objItems.end(),
+		int iNumberOfItemsUnderperforming = static_cast<int>(std::count_if(objItems.begin(), objItems.end(),
 			[&dPercentageOfTotalSales](auto& objItem){
-				return objItem.Get_Quantity_Sold() < dPercentageOfTotalSales;});
+				return objItem.Get_Quantity_Sold() < dPercentageOfTotalSales;}));
 		/*for (const Item& Item : objItems)
 		{
 			if (Item.Get_Quantity_Sold() < dPercentageOfTotalSales)
@@ -501,37 +506,44 @@ bool Items::Update_Quantity_Sold(std::string inputFilePath)
 	if (objItems.size() != 0)
 	{
 		Message_And_Input("Enter the name of the item you wish to update the quantity of: ", &sFindName);
-		for (Item& objItem : objItems)
+		auto it = std::find_if(objItems.begin(), objItems.end(), [&](auto &objItem) {
+			return objItem.Get_Item_Name() == sFindName;
+			});
+		if (it != objItems.end())
+		{
+			iOriginalQuantity = it->Get_Quantity_Sold();
+			std::cout << "Update quantity sold from " << it->Get_Quantity_Sold() << " to: ";
+			std::cin >> sUpdateQuantitySold;
+			if (Is_Input_A_Number(sUpdateQuantitySold, &iUpdateQuantitySold) == true) //checks if an error occurs
+			{
+				do
+				{
+					Message_And_Input("Are you sure you want to update the quantity of this item? (y/n): ", &cChoice);
+				} 
+				while (Is_Input_Valid());
+				cChoice = std::toupper(cChoice);
+
+				if (cChoice == 'Y')
+				{
+					it->Update_Quantity_Sold(&iUpdateQuantitySold);
+					Rewrite_Text_File(inputFilePath);
+					std::cout << sFindName << " original quantity has been updated from " << iOriginalQuantity << " to " << iUpdateQuantitySold << ".\n";
+					return true;
+				}
+			}
+			else
+			{
+				Perform_Invalid_Operation();
+			}
+		}
+		/*for (Item& objItem : objItems)
 		{
 			if (objItem.Get_Item_Name() == sFindName)
 			{
-				iOriginalQuantity = objItem.Get_Quantity_Sold();
-				std::cout << "Update quantity sold from " << objItem.Get_Quantity_Sold() << " to: ";
-				std::cin >> sUpdateQuantitySold;
-				if (Is_Input_A_Number(sUpdateQuantitySold, &iUpdateQuantitySold) == true) //checks if an error occurs
-				{
-					do
-					{
-						Message_And_Input("Are you sure you want to update the quantity of this item? (y/n): ", &cChoice);
-					} while (Is_Input_Valid());
-					cChoice = std::toupper(cChoice);
-
-					if (cChoice == 'Y')
-					{
-						objItem.Update_Quantity_Sold(&iUpdateQuantitySold);
-						Rewrite_Text_File(inputFilePath);
-						std::cout << sFindName << " original quantity has been updated from " << iOriginalQuantity << " to " << iUpdateQuantitySold << ".\n";
-						return true;
-					}
-				}
-				else
-				{
-					Perform_Invalid_Operation();
-				}
+				
 			}
-		}
+		}*/
 		std::cout << "Couldn't find '" << sFindName << "'.\n";
-
 	}
 	else
 	{

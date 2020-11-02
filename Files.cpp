@@ -1,19 +1,4 @@
 #include "Files.h"
-
-std::size_t Select_File_From_Menu(std::string &inputFilePath, std::vector<std::string>&objFile)
-{
-	std::string sChoice = "";
-	int iChoice = 0;
-	Message_And_Input("Choose a number that represents the text file you wish to use...\n",&sChoice);
-	if (Is_Input_A_Number(sChoice, &iChoice) == true)
-	{
-		return std::size_t(iChoice) - 1;
-	}
-	else
-	{
-		std::cout << "#Invalid menu choice, please try again!#\n";
-	}
-}
 bool Is_Index_Valid(std::vector<std::string>& objFile, std::size_t stIndex)
 {
 	try
@@ -21,12 +6,38 @@ bool Is_Index_Valid(std::vector<std::string>& objFile, std::size_t stIndex)
 		objFile.at(stIndex);
 		return true;
 	}
-	catch(...)
+	catch (...)
 	{
 		Display_Invalid_Command_Message();
 		return false;
 	}
 }
+bool Select_File_From_Menu(std::string &inputFilePath, std::vector<std::string>&objFile, std::string &ItemTextFile)
+{
+	/*stIndex = Select_File_From_Menu(inputFilePath, objFile);
+	if (Is_Index_Valid(objFile, stIndex) == true)
+	{
+		ItemTextFile = objFile.at(stIndex);
+		bExit = true;
+	}*/
+	std::string sChoice = "";
+	int iChoice = 0;
+	Message_And_Input("Choose a number that represents the text file you wish to use...\n",&sChoice);
+	if (Is_Input_A_Number(sChoice, &iChoice) == true)
+	{
+		if (Is_Index_Valid(objFile, static_cast<std::size_t>(iChoice) - 1) == true) {
+		
+			ItemTextFile = objFile.at(iChoice);
+			return true;
+		}
+	}
+	else
+	{
+		std::cout << "#Invalid menu choice, please try again!#\n";
+		return false;
+	}
+}
+
 void File_Menu_System(std::vector<std::string>& objFile, std::string& inputFilePath, std::string &ItemTextFile)
 {
 	std::string sChoice = "";
@@ -43,18 +54,11 @@ void File_Menu_System(std::vector<std::string>& objFile, std::string& inputFileP
 			switch (iChoice)
 			{
 			case 1:
-			
 				Add_New_File(inputFilePath, objFile);
-
 				break;
 			case 2:
 				Display_Existing_Files(objFile, inputFilePath);
-				stIndex = Select_File_From_Menu(inputFilePath, objFile);
-				if (Is_Index_Valid(objFile, stIndex) == true) 
-				{
-					ItemTextFile = objFile.at(stIndex);
-					bExit = true;
-				}
+				bExit = Select_File_From_Menu(inputFilePath, objFile,ItemTextFile);
 				break;
 			default:
 				std::cout << "You've entered an invalid command, please try again!\n";
@@ -66,8 +70,6 @@ void File_Menu_System(std::vector<std::string>& objFile, std::string& inputFileP
 		}
 	} 
 	while (bExit == false);
-	
-
 }
 void Display_File_Menu() 
 {
@@ -79,12 +81,11 @@ void Display_File_Menu()
 void Display_Existing_Files(std::vector<std::string>& objFiles, std::string& inputFilePath)
 {
 	objFiles.resize(0);
+	int iCount = 1;
 	Add_Text_File_To_Vector(objFiles, inputFilePath);
-	
-	for (std::size_t stCount = 0; stCount < objFiles.size(); stCount++)
-	{
-		std::cout << stCount + 1 << ". " << objFiles.at(stCount) << "\n\n";
-	}
+	std::for_each(objFiles.begin(), objFiles.end(), [&](auto &objFile) {
+		std::cout << iCount++ << ". " << objFile << "\n\n";
+		});
 }
 
 //This add's text file to vector.

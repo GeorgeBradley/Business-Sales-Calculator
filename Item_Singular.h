@@ -12,7 +12,7 @@ public:
 	//Constructor which uses initalisation list to create true initalization, as opposed to initalising in the body of the constructor which isn't true initalisation.
 	Item(std::string sInitItemName, double dInitSalePrice, int iInitQuantitySold)
 		:sItemName(sInitItemName), dSalePrice(dInitSalePrice), iQuantitySold(iInitQuantitySold) //initalisation list
-	{
+{
 		//Nothing in body of this constructor as initalisation takes place two lines above
 	}
 	Item(const Item& objItem)
@@ -36,11 +36,6 @@ public:
 	int Get_Quantity_Sold() const
 	{
 		return iQuantitySold;
-	}
-	//Member function that displays item information.
-	void Display_Item() const
-	{
-		
 	}
 
 	//Calculates individual item sale for an item
@@ -69,7 +64,6 @@ public:
 			<< "\tQuantity Sold: " << rhs.iQuantitySold << "\n"
 			<< "\tIndividual Sale Total: " << char(156) << rhs.Individual_Item_Sale() << "\n"
 			<< "===================================\n";
-
 		return os;
 	}
 };

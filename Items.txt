@@ -1,6 +1,6 @@
 Apple,1.4,32,
 Bannana,0.43,45,
 Peach,0.5,39,
-Coconut,0.32,65,
+Coconut,0.32,67,
 Lemon,0.47,78,
 Nuts,90.32,78,

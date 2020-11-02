@@ -11,3 +11,4 @@ void Add_Text_File_To_Vector(std::vector<std::string>& objFiles, std::string& in
 void File_Menu_System(std::vector<std::string>& objFile, std::string& inputFilePath, std::string &ItemFilePath);
 void Append_Credential_To_Text_File(std::string& inputFilePath, std::string& sNewTextFile);
 bool Add_New_File(std::string& inputFilePath, std::vector<std::string>& objFiles);
+bool Select_File_From_Menu(std::string& inputFilePath, std::vector<std::string>& objFile, std::string& ItemTextFile);
