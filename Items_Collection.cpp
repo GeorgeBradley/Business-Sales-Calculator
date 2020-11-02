@@ -299,16 +299,18 @@ bool Items::Display_Most_Sold_Item() const
 		return false;
 	}
 	auto MostSoldItem = Most_Sold_Item();
-	int iCountNumberOfMostSoldItems = 1;
-
-	for (const auto& objItem : objItems)
+	int iCountNumberOfMostSoldItems = std::count_if(objItems.begin(), objItems.end(), 
+		[&](auto& objItem) 
+		{
+			return objItem.Get_Quantity_Sold() == MostSoldItem->Get_Quantity_Sold();
+		});
+	/*for (const auto& objItem : objItems)
 	{
 		if (objItem.Get_Quantity_Sold() == MostSoldItem->Get_Quantity_Sold())
 		{
 			iCountNumberOfMostSoldItems++;
 		}
-	}
-
+	}*/
 	if (MostSoldItem->Get_Quantity_Sold() == 0)
 	{
 		std::cout << "None of your sales exceeded profit greater than 0.\n";

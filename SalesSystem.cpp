@@ -66,6 +66,7 @@ void AdditionalMenu(Items* objItems, std::string inputFilePath)
 		{
 
 			switch (iChoice)
+
 			{
 
 			case 0:
